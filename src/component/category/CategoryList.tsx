@@ -12,22 +12,21 @@ import { dispatchLoadCategories } from "../../redux/actions/categoriesActions";
 
 
 export const CategoryList: React.FC = () => {
-  const state = useSelector((state:TStore) => state);
+  const {  categoryList } = useSelector((state:TStore) => state.categoriesReducers);
+  const { loading, error } = useSelector((state:TStore) => state.commonReducers);
   const dispatch = useDispatch();
-
-  const { categoriesReducers, commonReducers } = state;
 
   React.useEffect(() => {
     dispatch(dispatchLoadCategories())
   }, [dispatch]);
 
-  if (commonReducers.loading.status) return <Loader loading={commonReducers.loading} />;
-  if (commonReducers.error.status) return <Error error={commonReducers.error} />;
-  if (categoriesReducers.categoryList.length <= 0) return <NoData />;
+  if (loading.status) return <Loader loading={loading} />;
+  if (error.status) return <Error error={error} />;
+  if (categoryList.length <= 0) return <NoData />;
   
   return (
     <div className="row">
-      {categoriesReducers.categoryList.map((category: category) => (
+      {categoryList.map((category: category) => (
         <CategoryCard key={category.cid} category={category} />
       ))}
     </div>

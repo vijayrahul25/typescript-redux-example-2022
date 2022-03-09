@@ -15,24 +15,24 @@ type TtopicParam = {
 };
 
 export const TopicList: React.FC = () => {
-  const state = useSelector((state:TStore) => state);
+  const { topicList } = useSelector((state:TStore) => state.topicsReducer);
+  const { loading, error } = useSelector((state:TStore) => state.commonReducers);
   const dispatch = useDispatch();
 
-  const { topicsReducer, commonReducers } = state;
   const { categoryId } = useParams() as TtopicParam;
 
   React.useEffect(() => {
     dispatch(dispatchLoadTopics(categoryId))
   }, [categoryId, dispatch]);
 
-  if (commonReducers.loading.status) return <Loader loading={commonReducers.loading} />;
-  if (commonReducers.error.status) return <Error error={commonReducers.error} />;
-  if (topicsReducer.topicList.length <= 0) return <NoData />;
+  if (loading.status) return <Loader loading={loading} />;
+  if (error.status) return <Error error={error} />;
+  if (topicList.length <= 0) return <NoData />;
 
   return (
     <div className="row">
       <ol className="list-group ">
-        {topicsReducer.topicList.map((topic: topic) => (
+        {topicList.map((topic: topic) => (
           <TopicCard key={topic.tid} topic={topic} />
         ))}
       </ol>

@@ -17,10 +17,9 @@ type TPostParam = {
 };
 
 export const PostList: React.FC = () => {
-  const state = useSelector((state:TStore) => state);
+  const { postList } = useSelector((state:TStore) => state.postsReducers);
+  const { loading, error } = useSelector((state:TStore) => state.commonReducers);
   const dispatch = useDispatch();
-
-  const { postsReducers, commonReducers } = state;
 
   let { topicId } = useParams() as TPostParam;
   
@@ -28,13 +27,13 @@ export const PostList: React.FC = () => {
     dispatch(dispatchLoadPosts(topicId));
   }, [topicId, dispatch]);
 
-  if (commonReducers.loading.status) return <Loader loading={commonReducers.loading} />;
-  if (commonReducers.error.status) return <Error error={commonReducers.error} />;
-  if (postsReducers.postList.length <= 0) return <NoData />;
+  if (loading.status) return <Loader loading={loading} />;
+  if (error.status) return <Error error={error} />;
+  if (postList.length <= 0) return <NoData />;
 
   return (
     <div className="row">
-      {postsReducers.postList.map((post: post) => (
+      {postList.map((post: post) => (
         <PostCard key={post.pid} post={post} />
       ))}
     </div>
